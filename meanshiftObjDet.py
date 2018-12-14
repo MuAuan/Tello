@@ -57,6 +57,7 @@ def main():
         k = cv2.waitKey(1)
         if k == ord('q'):
             txt=yomikomi(roi)
+            print(txt)
             cv2.destroyWindow("org")
             break
 
@@ -78,6 +79,15 @@ def main():
     fps = "FPS: ??"
     prev_time = timer()
     start_time=prev_time
+    
+    OUT_FILE_NAME = "meanshiftObjDet_result.mp4"
+    FRAME_RATE=8
+    out = cv2.VideoWriter(OUT_FILE_NAME, \
+                  cv_fourcc('M', 'P', '4', 'V'), \
+                  FRAME_RATE, \
+                  (w, h), \
+                  True)
+
     
     drone.takeoff()
     
@@ -104,7 +114,7 @@ def main():
             # 物体検出で取得した座標を元のフレームで囲う
             x,y,w,h = track_window
             img_dst = cv2.rectangle(image, (x,y), (x+w, y+h), 255, 2)
-            cv2.putText(img_dst, txt, (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1)
+            cv2.putText(img_dst, txt, (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,0), 1)
             #cv2.imshow('SHOW MEANSHIFT IMAGE', img_dst)
             curr_time = timer()
             exec_time = curr_time - prev_time
@@ -115,10 +125,12 @@ def main():
                 accum_time = accum_time - 1
                 fps = "FPS: " + str(curr_fps)
                 curr_fps = 0
-            cv2.putText(img_dst, fps, (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,0,0), 1)
+            cv2.putText(img_dst, fps, (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1)
             #cv2.putText(img_dst, str(dst), (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,0,0), 1)
             
             cv2.imshow('SHOW MEANSHIFT IMAGE', img_dst)
+            img_dst = cv2.resize(img_dst, (int(h), w))
+            out.write(img_dst)
             # qを押したら終了。
             k = cv2.waitKey(1)
             if k == ord('q'):
