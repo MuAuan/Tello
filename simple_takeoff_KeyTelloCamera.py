@@ -47,8 +47,7 @@ def test():
         
             cv2.imshow("org",image)
             key = cv2.waitKey(1)&0xff
-            #print("key=",key,"up_u=",ord('u'),"down_n=",ord('n'),"left_h=",ord('h'),"right_j=",ord('j'),"finish_f=",ord('f'))
-            print("key=",key,ord('f'))
+            print("key=",key,ord('q'))
         
             if key == ord('n'):  #n
                 drone.down(10)
