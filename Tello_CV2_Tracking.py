@@ -23,17 +23,17 @@ def tracking(drone,d,dx,dy,LB):
     elif (d - LB) < -15:
         drone.set_pitch(-1)   #drone.pitch = drone.STICK_HOVER - drone.STICK_L
         sleep(1)
-    elif dx > 80:
-        drone.right(5)    #drone.roll = drone.STICK_HOVER + drone.STICK_L
+    elif dx > 20:  #80
+        drone.left(1)    #drone.roll = drone.STICK_HOVER + drone.STICK_L
         sleep(1)
-    elif dx < -80:
-        drone.left(5)    #drone.roll = drone.STICK_HOVER - drone.STICK_L
+    elif dx < -20: #-80
+        drone.right(1)    #drone.roll = drone.STICK_HOVER - drone.STICK_L
         sleep(1)
     elif dy > 50:
-        drone.up(5)    #drone.thr = drone.STICK_HOVER - drone.STICK_L
+        drone.down(5)    #drone.thr = drone.STICK_HOVER - drone.STICK_L
         sleep(1)
     elif dy < -50:
-        drone.down(5)    #drone.thr = drone.STICK_HOVER + drone.STICK_L
+        drone.up(5)    #drone.thr = drone.STICK_HOVER + drone.STICK_L
         sleep(1)
     
 
@@ -105,7 +105,7 @@ def main():
     
     # Reference Distance
     L0 = 100
-    S0 = 50176 #224x224
+    #S0 = 50176 #224x224
 
     # Base Distance
     LB = 100
@@ -115,7 +115,7 @@ def main():
     y = 200
     w = 224
     h = 224
-    
+    track_window=(x,y,w,h)
     frame_skip=300
     # Define an initial bounding box
     bbox = (x, y, w, h)   #(287, 23, 86, 320)    
@@ -135,7 +135,11 @@ def main():
         if ok:
             #cv2.destroyWindow("org")
             break
-                
+    track_window=(int(bbox[0]),int(bbox[1]),int(bbox[2]),int(bbox[3]))
+    CX=int(bbox[0]+0.5*bbox[2])
+    CY=int(bbox[1]+0.5*bbox[3])
+    S0=bbox[2]*bbox[3]
+    print("CX,CY,S0=",CX,CY,S0)
     cv2.destroyAllWindows()
     drone.takeoff()
     drone.is_autopilot="True"
